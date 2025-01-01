@@ -1,0 +1,28 @@
+
+<IfModule mod_rewrite.c>
+    # Disable directory listing and MultiViews
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+    # Enable URL rewriting
+    RewriteEngine On
+    # Handle Authorization Header (for API authentication)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    # Redirect URLs with trailing slashes (if not a folder)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+    # Route requests to public/index.php (except requests already targeting /public/)
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+    # Route requests for non-existing files and directories to public/index.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ public/index.php [L]
+</IfModule>
+
+
+
+
+
